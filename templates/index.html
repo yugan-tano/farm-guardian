@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智农虫盾 - 农作物病虫害智能监测系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 主要内容 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 上传区域 */
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .upload-box {
+            border: 3px dashed #4CAF50;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-box:hover {
+            background: #f9f9f9;
+            border-color: #2E7D32;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .upload-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* 结果区域 */
+        .result-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .result-placeholder {
+            text-align: center;
+            color: #888;
+            padding: 60px 20px;
+        }
+
+        .result-content {
+            display: none;
+        }
+
+        .disease-name {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .result-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .result-item strong {
+            color: #555;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .risk-high {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .risk-medium {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .risk-low {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .preview-img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 历史记录 */
+        .history-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            grid-column: 1 / -1;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:hover {
+            background: #f9f9f9;
+        }
+
+        .disease-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-info {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 状态提示 */
+        .status {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .status-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        .sys-status {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-leaf"></i>
+                智农虫盾
+                <i class="fas fa-shield-alt"></i>
+            </h1>
+            <p>基于人工智能的农作物病虫害智能监测与预警系统 · 猕猴桃病害专版 · 快速识别 · 精准预警 · 科学防治</p>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="main-content">
+            <!-- 上传区域 -->
+            <div class="upload-section">
+                <h2><i class="fas fa-cloud-upload-alt"></i> 上传叶片图像</h2>
+                <p style="color: #666; margin: 10px 0 20px;">请上传清晰的猕猴桃叶片照片，支持 JPG、PNG 格式</p>
+
+                <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <p style="font-size: 1.2rem; margin-bottom: 10px;">点击或拖拽文件到此处</p>
+                    <p style="color: #888; font-size: 0.9rem;">最大文件大小: 16MB</p>
+                </div>
+
+                <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleFileSelect()">
+
+                <div id="status"></div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>正在分析图像，请稍候...</p>
+                </div>
+
+                <button class="upload-btn" id="uploadBtn" onclick="uploadImage()" disabled>
+                    <i class="fas fa-search"></i> 开始智能分析
+                </button>
+
+                <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">
+                    <i class="fas fa-lightbulb"></i> 提示：请拍摄叶片正面清晰照片，避免反光或阴影
+                </p>
+            </div>
+
+            <!-- 结果区域 -->
+            <div class="result-section">
+                <h2><i class="fas fa-chart-line"></i> 病害分析报告</h2>
+
+                <div id="resultPlaceholder" class="result-placeholder">
+                    <i class="fas fa-clipboard-list" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                    <p>分析结果将在这里显示</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">请先上传叶片图像进行分析</p>
+                </div>
+
+                <div id="resultContent" class="result-content">
+                    <h3 class="disease-name" id="diseaseName">病害名称</h3>
+
+                    <div class="result-item">
+                        <strong>病害类型:</strong>
+                        <span id="diseaseType">-</span>
+                    </div>
+
+                    <div class="result-item">
+                        <strong>识别置信度:</strong>
+                        <span id="confidence">-</span>
+                    </div>
+
+                    <div class="result-item">
+                        <strong>风险等级:</strong>
+                        <span id="riskLevel">-</span>
+                    </div>
+
+                    <div class="result-item">
+                        <strong>检测时间:</strong>
+                        <span id="detectionTime">-</span>
+                    </div>
+
+                    <div class="result-item">
+                        <strong>报告编号:</strong>
+                        <span id="reportId">-</span>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <h4><i class="fas fa-first-aid"></i> 防治建议</h4>
+                        <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin-top: 10px; white-space: pre-line;">
+                            <span id="adviceText">-</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px; text-align: center;">
+                        <h4><i class="fas fa-image"></i> 图片预览</h4>
+                        <img id="previewImage" class="preview-img" src="" alt="预览">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="history-section">
+            <div class="history-header">
+                <h2><i class="fas fa-history"></i> 最近检测记录</h2>
+                <button class="upload-btn" style="padding: 10px 20px;" onclick="loadHistory()">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+            </div>
+
+            <div id="historyList">
+                <!-- 历史记录动态加载 -->
+                <div class="history-item">
+                    <div class="disease-info">
+                        <span>猕猴桃溃疡病</span>
+                        <span class="risk-badge risk-high">高风险</span>
+                        <span>置信度: 87.3%</span>
+                    </div>
+                    <div class="time-info">2023-11-15 10:30</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>
+                <i class="fas fa-cogs"></i> 系统状态: <span class="sys-status" id="sysStatus">运行正常</span> |
+                <i class="fas fa-code"></i> 智农虫盾 v1.0 |
+                <i class="fas fa-graduation-cap"></i> 大学生创新创业项目
+            </p>
+            <p style="margin-top: 10px; color: #999;">
+                © 2023 智农虫盾项目组 · 本系统仅供学术研究使用 · 建议结果仅供参考，具体防治请咨询农技专家
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let selectedFile = null;
+
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载历史记录
+            loadHistory();
+
+            // 检查系统状态
+            checkSystemStatus();
+
+            // 设置拖放上传
+            setupDragAndDrop();
+        });
+
+        // 设置拖放上传
+        function setupDragAndDrop() {
+            const uploadBox = document.getElementById('uploadBox');
+
+            uploadBox.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#2E7D32';
+                this.style.background = '#f0f9f0';
+            });
+
+            uploadBox.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#4CAF50';
+                this.style.background = '';
+            });
+
+            uploadBox.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#4CAF50';
+                this.style.background = '';
+
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    handleFile(file);
+                }
+            });
+        }
+
+        // 处理文件选择
+        function handleFileSelect() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length) {
+                handleFile(fileInput.files[0]);
+            }
+        }
+
+        // 处理文件
+        function handleFile(file) {
+            // 检查文件类型
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                showStatus('请选择图片文件 (JPG, PNG, GIF)', 'error');
+                return;
+            }
+
+            // 检查文件大小
+            if (file.size > 16 * 1024 * 1024) {
+                showStatus('文件大小超过16MB限制', 'error');
+                return;
+            }
+
+            selectedFile = file;
+
+            // 启用上传按钮
+            document.getElementById('uploadBtn').disabled = false;
+
+            // 显示文件名
+            showStatus(`已选择文件: ${file.name} (${formatFileSize(file.size)})`, 'success');
+
+            // 预览图片
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // 可以在这里添加图片预览
+                console.log('文件已选择:', file.name);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 上传图片
+        async function uploadImage() {
+            if (!selectedFile) {
+                showStatus('请先选择图片文件', 'error');
+                return;
+            }
+
+            // 显示加载动画
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('uploadBtn').disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // 隐藏加载动画
+                document.getElementById('loading').style.display = 'none';
+
+                if (result.success) {
+                    // 显示分析结果
+                    displayResult(result);
+                    showStatus('分析完成！', 'success');
+
+                    // 重新加载历史记录
+                    loadHistory();
+                } else {
+                    showStatus('分析失败: ' + result.error, 'error');
+                    document.getElementById('uploadBtn').disabled = false;
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('uploadBtn').disabled = false;
+                showStatus('网络错误: ' + error.message, 'error');
+            }
+        }
+
+        // 显示分析结果
+        function displayResult(result) {
+            // 隐藏占位符，显示结果
+            document.getElementById('resultPlaceholder').style.display = 'none';
+            document.getElementById('resultContent').style.display = 'block';
+
+            // 填充数据
+            document.getElementById('diseaseName').textContent = result.disease;
+            document.getElementById('diseaseType').textContent = result.disease;
+            document.getElementById('confidence').textContent = result.confidence;
+
+            // 风险等级
+            const riskElement = document.getElementById('riskLevel');
+            riskElement.textContent = result.risk_level;
+            riskElement.className = 'risk-badge risk-' + result.risk_level.toLowerCase();
+
+            document.getElementById('detectionTime').textContent = result.timestamp;
+            document.getElementById('reportId').textContent = result.report_id;
+            document.getElementById('adviceText').textContent = result.advice;
+
+            // 图片预览
+            document.getElementById('previewImage').src = result.image_url;
+        }
+
+        // 加载历史记录
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/demo');
+                const data = await response.json();
+
+                let html = '';
+
+                data.records.forEach(record => {
+                    const riskClass = 'risk-' + record.risk_level.toLowerCase();
+
+                    html += `
+                        <div class="history-item">
+                            <div class="disease-info">
+                                <span>${record.disease}</span>
+                                <span class="risk-badge ${riskClass}">${record.risk_level}风险</span>
+                                <span>置信度: ${record.confidence}</span>
+                            </div>
+                            <div class="time-info">${record.timestamp}</div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('historyList').innerHTML = html;
+            } catch (error) {
+                console.error('加载历史记录失败:', error);
+            }
+        }
+
+        // 检查系统状态
+        async function checkSystemStatus() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                document.getElementById('sysStatus').textContent = '运行正常';
+            } catch (error) {
+                document.getElementById('sysStatus').textContent = '连接异常';
+                document.getElementById('sysStatus').style.background = '#ffebee';
+                document.getElementById('sysStatus').style.color = '#c62828';
+            }
+        }
+
+        // 显示状态消息
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+
+            statusDiv.innerHTML = `
+                <div class="status status-${type}">
+                    <i class="fas fa-${icon}"></i>
+                    ${message}
+                </div>
+            `;
+
+            // 3秒后自动清除
+            if (type !== 'error') {
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
