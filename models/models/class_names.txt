@@ -1,0 +1,4 @@
+brown_spot
+gray_mold
+healthy
+ulcer

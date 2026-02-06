@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>“智农虫盾”项目研究报告 - 2026</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', 'SimSun', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+        .paper-container {
+            background-color: #fff;
+            padding: 60px 80px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            font-size: 22px;
+            margin-top: 30px;
+        }
+        h3 {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .author-info {
+            text-align: center;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        .abstract {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        .abstract-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .keywords {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .code-block {
+            background-color: #f8f8f8;
+            border-left: 4px solid #007bff;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .todo-list {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="paper-container">
+    <h1>“智农虫盾”：基于物联网与深度学习的猕猴桃病虫害监测预警系统研究</h1>
+    <div class="author-info">
+        项目阶段：实践研发期（2024-2026）<br>
+        主要针对作物：猕猴桃 (Actinidia chinensis)
+    </div>
+
+    <div class="abstract">
+        <span class="abstract-title">摘要：</span>
+        本文介绍了一种名为“智农虫盾”的智能化农业监测系统。针对猕猴桃种植过程中病虫害频发、人工监测成本高且滞后的问题，本研究提出了一种结合物联网（IoT）环境感知与卷积神经网络（CNN）图像识别的综合解决方案。系统通过收集农作物生长环境的实时参数与叶片图像，利用深度学习模型进行病害识别，并结合环境规律给出预警建议。目前，系统已完成基础框架搭建，实现了基于Flask的后端API服务及初步的CNN模型训练。
+        <div class="keywords">关键词：猕猴桃；病虫害监测；深度学习；物联网；Flask；智能农业</div>
+    </div>
+
+    <h2>1. 引言</h2>
+    <p>病虫害是影响农作物产量和品质的核心因素。特别是在猕猴桃产业中，溃疡病（Psa）、褐斑病等具有极强的传染性。传统的防治方法依赖人工巡检，存在误判率高、响应不及时等缺陷。本项目旨在创建高效、准确、实时的监测系统，为个体种植户和农业企业提供低成本、轻量化的技术支持。</p>
+
+    <h2>2. 系统架构设计</h2>
+    <h3>2.1 技术路线</h3>
+    <p>系统采用软硬件结合的架构。硬件侧负责环境参数（温湿度、光照）采集；软件侧基于Python开发，采用以下技术栈：</p>
+    <ul>
+        <li><strong>后端框架：</strong>Flask (Python)</li>
+        <li><strong>深度学习库：</strong>TensorFlow / Keras</li>
+        <li><strong>图像处理：</strong>PIL, OpenCV</li>
+        <li><strong>数据处理：</strong>Numpy, Matplotlib</li>
+    </ul>
+
+    <h3>2.2 项目工程结构</h3>
+    <p>目前项目已建立规范的模块化结构，如下表所示：</p>
+    <table>
+        <tr>
+            <th>目录/文件</th>
+            <th>功能描述</th>
+        </tr>
+        <tr>
+            <td><code>data/</code></td>
+            <td>存储原始图像数据集，按病害种类归类。</td>
+        </tr>
+        <tr>
+            <td><code>models/</code></td>
+            <td>存放训练好的 <code>.keras</code> 模型文件及训练脚本。</td>
+        </tr>
+        <tr>
+            <td><code>utils/</code></td>
+            <td>存放核心推理算法逻辑（如 <code>predictor_smart.py</code>）。</td>
+        </tr>
+        <tr>
+            <td><code>app.py</code></td>
+            <td>系统主程序，提供 Web 服务和 API 接口。</td>
+        </tr>
+        <tr>
+            <td><code>data_collector.py</code></td>
+            <td>自动化数据采集与目录初始化工具。</td>
+        </tr>
+    </table>
+
+    <h2>3. 关键模块实现</h2>
+    <h3>3.1 数据采集与预处理</h3>
+    <p>通过 <code>data_collector.py</code> 构建标准数据集结构，支持包括健康、溃疡病、褐斑病、花腐病在内的四类核心识别目标。代码实现了目录自动生成逻辑，确保了数据训练的一致性。</p>
+
+    <h3>3.2 模型训练逻辑</h3>
+    <p>在 <code>train_simple.py</code> 中，系统采用了改进的 CNN 架构，引入了数据增强层（RandomFlip, RandomRotation）和批归一化（BatchNormalization），以提高模型在复杂田间环境下的泛化能力。模型输出采用 Softmax 激活函数进行多分类识别。</p>
+
+    <h3>3.3 API 服务与业务逻辑</h3>
+    <p><code>app.py</code> 作为核心调度中心，实现了以下功能：</p>
+    <ul>
+        <li>支持多格式图片上传（PNG, JPG, GIF）。</li>
+        <li>集成了 AI 预测器接口，并具备异常处理机制（AI不可用时自动回退至演示模式）。</li>
+        <li>内置病害知识库（DISEASE_DB），为农户提供针对性的专家建议。</li>
+    </ul>
+
+    <h2>4. 创新点与特色</h2>
+    <ol>
+        <li><strong>轻量化设计：</strong>系统旨在降低部署门槛，支持普通智能手机与基础传感器接入。</li>
+        <li><strong>多维度预警：</strong>不仅依靠单一的图像识别，未来将整合病害变化规律与环境因子的相关性。</li>
+        <li><strong>快速落地：</strong>专注于猕猴桃细分领域，具有较强的专业针对性。</li>
+    </ol>
+
+    <h2>5. 进度安排与预期成果</h2>
+    <p>项目当前处于<strong>实践研发阶段</strong>。已初步构建好预测系统框架，并具备了病害基础知识储备。</p>
+    <ul>
+        <li><strong>2024.11 - 2025.06：</strong> 完善模型精度，开发硬件采集终端。</li>
+        <li><strong>2025.07 - 2026.06：</strong> 系统集成测试，实地农园部署及研究报告结题。</li>
+    </ul>
+
+    <h2>6. 待解决的问题（Todo List）</h2>
+    <p class="todo-list">
+        1. 补全 utils/predictor_smart.py 中的实时推理代码。<br>
+        2. 提高模型在小样本量下的识别准确率。<br>
+        3. 增加环境传感器数据的 API 接口与分析权重。
+    </p>
+
+    <footer>
+        <p>© 2026 “智农虫盾”研发组 | 致力于农业智能化的每一小步</p>
+    </footer>
+</div>
+
+</body>
+</html>
