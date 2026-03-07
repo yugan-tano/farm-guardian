@@ -1,0 +1,65 @@
+# === Python 基础过滤 ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# === PyCharm / VSCode 编辑器过滤 ===
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# === 虚拟环境 (非常重要，不要上传 venv) ===
+venv/
+env/
+.env/
+ENV/
+bin/
+include/
+lib/
+Lib/
+Scripts/
+pyvenv.cfg
+
+# === 深度学习与大数据过滤 (按权重建议) ===
+# 如果你的模型权重文件（.pt/.pth/.onnx）很大，建议取消下面的注释，不要传 Git
+# *.pt
+# *.pth
+# *.h5
+# *.onnx
+# *.weights
+
+# === 数据集过滤 ===
+# 如果你有数千张训练图片，建议把数据集放在单独文件夹并过滤掉
+# datasets/
+# data/
+
+# === 日志与临时文件 ===
+*.log
+temp/
+tmp/
+
+# === 操作系统与垃圾文件 ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
