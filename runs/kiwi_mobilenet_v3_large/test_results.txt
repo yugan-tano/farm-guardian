@@ -1,0 +1,10 @@
+              precision    recall  f1-score   support
+
+  brown_spot       0.98      0.97      0.98       236
+   gray_mold       0.96      1.00      0.98       124
+     healthy       0.98      0.98      0.98       134
+       ulcer       1.00      0.99      1.00       107
+
+    accuracy                           0.98       601
+   macro avg       0.98      0.98      0.98       601
+weighted avg       0.98      0.98      0.98       601

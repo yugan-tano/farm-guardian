@@ -155,7 +155,7 @@ def train_model():
     print("🚀 开始用真实数据训练模型...")
 
     # 1. 加载真实数据
-    result = load_real_data('../data/sample')
+    result = load_real_data('../data/kiwi')
     if result is None:
         print("❌ 数据加载失败，使用合成数据...")
         return train_synthetic()
